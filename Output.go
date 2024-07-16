@@ -206,12 +206,6 @@ func BDIV(by, opby *byte){
 func BMOD(by, opby *byte){
     *by %= *opby
 }
-// End Functions
-
-// Print Funct
-func printByteLine(by *byte, ln int){
-    fmt.Println(ln, by, *by)
-}
 
 func HELP(op int) {
 	switch op{
@@ -229,28 +223,86 @@ func HELP(op int) {
 		break
 	case 1:
 		//Byte by Value
-		fmt.Println("_____OPPERATIONS_____ \n", "SET - Sets the value of a byte \n", "ADD - Adds to the value of a byte \n", "SUB - Subtracts a value from a byte \n", "MULT - Multiplies a byte by a value \n", "DIV - Divides a byte by a value \n", "MOD - Gets the remainder of a byte divided by a value")
+        functs := [...]string{
+            "_____OPPERATIONS_____ \n", 
+            "SET - Sets the value of a byte \n", "ADD - Adds to the value of a byte \n", 
+            "SUB - Subtracts a value from a byte \n", "MULT - Multiplies a byte by a value \n", 
+            "DIV - Divides a byte by a value \n", 
+            "MOD - Gets the remainder of a byte divided by a value"}
+		fmt.Println(functs)
 		break
 	case 2:
 		//Byte by Byte
-		fmt.Println("_____OPPERATIONS_____ \n", "PTR - Set a byte equal to another byte \n", "MOV - Move the value of one byte to another and set the original to zero \n", "BADD - Adds the value of one byte to another \n", "BSUB - Subtracts the value of one byte from another \n", "BMULT - Multipies the value of one byte with another \n", "BDIV - Divides the value of one byte from another \n", "BMOD - Gets the remainder of a byte divided by another byte \n")
+        functs := [...]string{
+            "_____OPPERATIONS_____ \n", 
+            "PTR - Set a byte equal to another byte \n", 
+            "MOV - Move the value of one byte to another and set the original to zero \n", 
+            "BADD - Adds the value of one byte to another \n", 
+            "BSUB - Subtracts the value of one byte from another \n", 
+            "BMULT - Multipies the value of one byte with another \n", 
+            "BDIV - Divides the value of one byte from another \n", 
+            "BMOD - Gets the remainder of a byte divided by another byte \n"}
+		fmt.Println(functs)
 		break
 	case 3:
 		//Byte Unary
-		fmt.Println("_____OPPERATIONS_____ \n", "INC - Increment the value of a byte by 1", "DNC - Decrement the value of a byte by 1", "RAND - Randomizes the value of the byte \n")
+        functs := [...]string{
+            "_____OPPERATIONS_____ \n", 
+            "INC - Increment the value of a byte by 1", 
+            "DNC - Decrement the value of a byte by 1", 
+            "RAND - Randomizes the value of the byte \n"}
+		fmt.Println(functs)
 		break
 	case 4:
 		//Byte Conversions
-		fmt.Println("_____OPPERATIONS_____ \n", "HEX - Writes out the hexadecimal value of the byte \n", "BIT - Writes out the binary value of the byte \n")
+        functs := [...]string{
+            "_____OPPERATIONS_____ \n", 
+            "HEX - Writes out the hexadecimal value of the byte \n", 
+            "BIT - Writes out the binary value of the byte \n"}
+		fmt.Println(functs)
 		break
 	case 5:
 		//Program
-		fmt.Println("_____OPPERATIONS_____ \n", "EXIT - Leaves the program \n", "RESET - Resets the Program \n")
+        functs := [...]string{
+            "_____OPPERATIONS_____ \n", 
+            "PRINT - Print the table",
+            "PRINTFT - Print the table from one line to another (Note a <= b)",
+            "EXIT - Leaves the program \n", 
+            "RESET - Resets the Program \n"}
+		fmt.Println(functs)
 		break
 	default:
 		fmt.Println("Page Not Found")
 		break
 	}
+}
+// End Functions
+
+// Print Funct
+func PrintByteLine(by *byte, ln int){
+    fmt.Println(ln, by, *by)
+}
+
+func PrintByteTable(bys *[16]byte){
+    // Writes out the byte table
+    for i := 0; i < len(bys); i++{
+        PrintByteLine(&bys[i], i)
+    }
+}
+
+func PrintByteTableFromTo(bys *[16]byte, start, end int){
+    // Writes out the byte table
+    if (start > len(bys) || start < 0) { 
+        fmt.Println("Value of start exceeds accepted range of list.") 
+        return
+    }
+    if (end > len(bys) || end < start) { 
+        fmt.Println("Value of end exceeds accepted range of list.")
+        return
+    }
+    for i := start; i <= end; i++{
+        PrintByteLine(&bys[i], i)
+    }
 }
 
 func main() {
@@ -262,103 +314,105 @@ func main() {
     for i := 0; i < len(bytes); i++{
         bytes[i] = byte(rand.Intn(255))
     }
+    PrintByteTable(&bytes)
     // Start
-    start:
-    // Writes out the byte table
-    for i := 0; i < len(bytes); i++{
-        printByteLine(&bytes[i], i)
+    for {
+        fmt.Printf("\n")
+        // Determines the opperation to use on the bytes
+        fmt.Printf("What do you want to do?\n")
+        var val, op int
+        var cmd string
+        fmt.Scanln(&op, &cmd, &val)
+        // Opperates
+        //op = line
+        switch cmd{
+            // Program cmd
+            case "?":
+                HELP(op)
+                break
+            case "HELP":
+                HELP(op)
+                break
+            case "":
+                fmt.Println(op)
+                break
+            case "PRINT":
+                PrintByteTable(&bytes)
+                break
+            case "PRINTFT":
+                PrintByteTableFromTo(&bytes, op, val)
+                break
+            case "EXIT":
+                goto exit
+                break
+            case "RESET":
+                goto reset
+                break
+            // Byte by value
+            case "SET":
+                SET(&bytes[op], val)
+                break
+            case "ADD":
+                ADD(&bytes[op], val)
+                break
+            case "SUB":
+                SUB(&bytes[op], val)
+                break
+            case "MULT":
+                MULT(&bytes[op], val)
+                break
+            case "DIV":
+                DIV(&bytes[op], val)
+                break
+            case "MOD":
+                MOD(&bytes[op], val)
+                break
+            // Byte by byte
+            case "PTR":
+                PTR(&bytes[op], &bytes[val])
+                break
+            case "MOV":
+                MOV(&bytes[op], &bytes[val])
+                break
+            case "BADD":
+                BADD(&bytes[op], &bytes[val])
+                break
+            case "BSUB":
+                BSUB(&bytes[op], &bytes[val])
+                break
+            case "BMULT":
+                BMULT(&bytes[op], &bytes[val])
+                break
+            case "BDIV":
+                BDIV(&bytes[op], &bytes[val])
+                break
+            case "BMOD":
+                BMOD(&bytes[op], &bytes[val])
+                break
+            // Byte Unary
+            case "INC":
+                INC(&bytes[op])
+                break
+            case "DNC":
+                DNC(&bytes[op])
+                break
+            case "RAND":
+                RAND(&bytes[op])
+                break
+            // Conversion
+            case "HEX":
+                HEX(&bytes[op])
+                break
+            case "BIT":
+                BIT(&bytes[op]);
+                break
+            // Variables
+            default:
+                fmt.Printf("Not an accepted opperation, type 0 ? for more info. \n")
+                break
+        }
+        fmt.Printf("\n")
     }
-    fmt.Printf("\n")
-    // Determines the opperation to use on the bytes
-    fmt.Printf("What do you want to do?\n")
-    var val, op int
-    var cmd string
-    fmt.Scanln(&op, &cmd, &val)
-    // Opperates
-    //op = line
-    switch cmd{
-        // Program cmd
-        case "?":
-            HELP(op)
-            break
-		case "HELP":
-			HELP(op)
-			break
-        case "":
-            fmt.Println(op)
-            break
-        case "EXIT":
-            goto exit
-            break
-        case "RESET":
-            goto reset
-            break
-        // Byte by value
-        case "SET":
-            SET(&bytes[op], val)
-            break
-        case "ADD":
-            ADD(&bytes[op], val)
-            break
-        case "SUB":
-            SUB(&bytes[op], val)
-            break
-        case "MULT":
-            MULT(&bytes[op], val)
-            break
-        case "DIV":
-            DIV(&bytes[op], val)
-            break
-        case "MOD":
-            MOD(&bytes[op], val)
-            break
-        // Byte by byte
-        case "PTR":
-            PTR(&bytes[op], &bytes[val])
-            break
-        case "MOV":
-            MOV(&bytes[op], &bytes[val])
-            break
-        case "BADD":
-            BADD(&bytes[op], &bytes[val])
-            break
-        case "BSUB":
-            BSUB(&bytes[op], &bytes[val])
-            break
-        case "BMULT":
-            BMULT(&bytes[op], &bytes[val])
-            break
-        case "BDIV":
-            BDIV(&bytes[op], &bytes[val])
-            break
-        case "BMOD":
-            BMOD(&bytes[op], &bytes[val])
-            break
-        // Byte Unary
-        case "INC":
-            INC(&bytes[op])
-            break
-        case "DNC":
-            DNC(&bytes[op])
-            break
-        case "RAND":
-            RAND(&bytes[op])
-            break
-        // Conversion
-        case "HEX":
-            HEX(&bytes[op])
-            break
-        case "BIT":
-            BIT(&bytes[op]);
-            break
-        // Variables
-        default:
-            fmt.Printf("Not an accepted opperation, type 0 ? for more info. \n")
-            break
-    }
-    fmt.Printf("\n")
-    // Return
-    goto start
     exit:
     fmt.Printf("Bye")
 }
