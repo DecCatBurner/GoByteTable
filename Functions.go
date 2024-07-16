@@ -146,6 +146,16 @@ func DNC(by *byte){
     *by--
 }
 
+func SHIFT(by *byte, l int){
+	//var b = int(*by)
+	if (l > 0) {
+		*by = *by << (l)
+	} else {
+		*by = *by >> (-l)
+	}
+	//*by = byte(b)
+}
+
 // Byte by value opperations
 
 func SET(by *byte, n int){
@@ -248,8 +258,9 @@ func HELP(op int) {
 		//Byte Unary
         functs := [...]string{
             "_____OPPERATIONS_____ \n", 
-            "INC - Increment the value of a byte by 1", 
-            "DNC - Decrement the value of a byte by 1", 
+            "INC - Increment the value of a byte by 1 \n", 
+            "DNC - Decrement the value of a byte by 1 \n",
+			"SFT - Shift the binary left by val \n", 
             "RAND - Randomizes the value of the byte \n"}
 		fmt.Println(functs)
 		break
